@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  TestApp
-//
-//  Created by Andrew Kuzmich on 27.11.2024.
-//
-
 import SwiftUI
 
 struct MainView: View {
