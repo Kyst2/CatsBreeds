@@ -1,9 +1,17 @@
 import SwiftUI
 
+fileprivate let columnsPortrait = (1...2).map { _ in GridItem(.flexible()) }
+fileprivate let columnsLandscape = (1...4).map { _ in GridItem(.flexible()) }
+
 struct MainView: View {
     @StateObject var model = MainViewModel()
     
-    let columns = (1...2).map { _ in GridItem(.flexible()) }
+    private let orientationChanged = NotificationCenter.default
+            .publisher(for: UIDevice.orientationDidChangeNotification)
+            .makeConnectable()
+            .autoconnect()
+    
+    @State var columns: [GridItem] = columnsPortrait
     
     var body: some View {
         ScrollView {
@@ -18,10 +26,13 @@ struct MainView: View {
                     ProgressView()
                 }
             }
-            
-        }.padding(.top,15)
+        }
+        .padding(.top,15)
         .task {
             await model.loadData()
+        }
+        .onReceive(orientationChanged) { _ in
+            columns = UIDevice.current.orientation.isLandscape ? columnsLandscape : columnsPortrait
         }
     }
 }
