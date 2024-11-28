@@ -19,6 +19,7 @@ struct CatItem: View {
             if let image = model.img {
                 Image(uiImage: image)
                     .resizable()
+                    .scaledToFill()
                     .frame(width: 150 , height: 150)
                     .mask( RoundedRectangle(cornerRadius: 7) )
             } else {
@@ -41,9 +42,21 @@ struct CatItem: View {
     
     func DetailsSheet() -> some View {
         VStack {
+            if let image = model.img {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .mask( RoundedRectangle(cornerRadius: 7) )
+            } else {
+                ProgressView()
+            }
+            
             Text(model.cat.description)
                 .font(.caption)
                 .padding()
+            
+            //add more details
+            Spacer()
         }
     }
 }
