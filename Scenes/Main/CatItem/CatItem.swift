@@ -55,7 +55,6 @@ struct CatItem: View {
                 .font(.caption)
                 .padding()
             
-            //add more details
             Spacer()
         }
     }
