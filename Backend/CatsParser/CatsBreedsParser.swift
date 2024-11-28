@@ -42,7 +42,7 @@ class CatsBreedsParser {
         let catImageUrl = await CatsBreedsParser.getURLImage(catID: catID)?.first?.url
         guard let catImageUrl = catImageUrl else { return nil }
         
-        if let img = ImgsCache.shared.dict[catImageUrl] {
+        if let img = ImgsCache.shared.getImg(id: catImageUrl) {
             return img
         }
         
@@ -51,9 +51,9 @@ class CatsBreedsParser {
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             
-            let image = UIImage(data: data)
+            guard let image = UIImage(data: data) else { return nil }
             
-            ImgsCache.shared.dict[catImageUrl] = image
+            ImgsCache.shared.saveImg(id: catImageUrl, img: image)
             
             return image
         } catch {
@@ -71,11 +71,25 @@ extension CatBreed {
 }
 
 class ImgsCache {
-    static var shared = ImgsCache()
+    static let shared = ImgsCache()
     
-    var dict: [String: UIImage] = [:]
+    private init(){ }
     
-    private init() { }
+    private let internalQueue = DispatchQueue(label: "com.singletioninternal.queue", qos: .default, attributes: .concurrent)
+    
+    private var dict: [String: UIImage] = [:]
+    
+    func getImg(id: String) -> UIImage? {
+        return internalQueue.sync {
+            dict[id]
+        }
+    }
+    
+    func saveImg(id: String, img: UIImage) {
+        internalQueue.async(flags: .barrier) {
+            self.dict[id] = img
+        }
+    }
 }
 
 struct CatImage: Codable {
