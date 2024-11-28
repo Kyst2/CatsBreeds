@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CatBreed: Codable, Equatable {
+struct CatBreed: Codable, Equatable, Identifiable {
     let weight: Weight
     let id: String
     let name: String

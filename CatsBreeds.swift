@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct CatsAndDogs: App {
+struct CatsBreeds: App {
     var body: some Scene {
         WindowGroup {
             MainView()
