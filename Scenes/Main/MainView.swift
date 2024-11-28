@@ -15,16 +15,11 @@ struct MainView: View {
     
     var body: some View {
         ScrollView {
-            Section("Cats") {
-                if let allCats = model.allCats {
-                    LazyVGrid(columns: columns) {
-                        ForEach(allCats) { cat in
-                            CatItem(cat: cat)
-                        }
-                    }
-                } else {
-                    ProgressView()
-                }
+            switch model.allCats {
+            case .success(let catsBreeds):
+                ListOfBreeds(catsBreeds)
+            case .failure(let error):
+                ErrorView(error)
             }
         }
         .padding(.top,15)
@@ -33,6 +28,30 @@ struct MainView: View {
         }
         .onReceive(orientationChanged) { _ in
             columns = UIDevice.current.orientation.isLandscape ? columnsLandscape : columnsPortrait
+        }
+    }
+    
+    func ListOfBreeds(_ catsBreeds: [CatBreed]) -> some View {
+        Section("Cats") {
+            if catsBreeds.count == 0 {
+                ProgressView()
+            } else {
+                LazyVGrid(columns: columns) {
+                    ForEach(catsBreeds) { cat in
+                        CatItem(cat: cat)
+                    }
+                }
+            }
+        }
+    }
+    
+    func ErrorView(_ error: Error) -> some View {
+        VStack{
+            Text("Error occured: \(error)")
+            
+            Button("Reload") {
+                
+            }
         }
     }
 }

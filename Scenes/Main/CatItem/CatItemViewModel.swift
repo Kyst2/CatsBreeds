@@ -19,7 +19,7 @@ class CatItemViewModel: ObservableObject {
                 self.img = img
             }
         } catch {
-            //throw error into interface
+            fatalError("NOT IMPLEMENTED")
         }
     }
 }
